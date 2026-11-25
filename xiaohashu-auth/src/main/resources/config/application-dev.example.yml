@@ -4,7 +4,7 @@ spring:
     # 数据库连接信息
     url: jdbc:mysql://127.0.0.1:3306/xiaohashu?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root # 数据库用户名
-    password: d/DcFf4RLx/VNrvjKjr/qn+walNaaTM3orz38lk9wRKDPz3MZR6o90zAVQfZKNCbEbv6rtpHarT9IOkranPr0w== # 数据库密码
+    password: ${DB_PASSWORD} # 数据库密码
     type: com.alibaba.druid.pool.DruidDataSource
     druid: # Druid 连接池
       initial-size: 5 # 初始化连接池大小

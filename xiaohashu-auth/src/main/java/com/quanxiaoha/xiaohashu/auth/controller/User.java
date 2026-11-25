@@ -15,9 +15,11 @@ public class User {
     /**
      * 昵称
      */
-    private String nickname;
-    /*
-    创建时间
+    private String nickName;
+
+    /**
+     * 创建时间
      */
     private LocalDateTime createTime;
 }
+

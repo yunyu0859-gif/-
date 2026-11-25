@@ -131,6 +131,11 @@
         <artifactId>xiaoha-spring-boot-starter-biz-operationlog</artifactId>
         <version>${revision}</version>
       </dependency>
+      <dependency>
+        <groupId>com.quanxiaoha</groupId>
+        <artifactId>xiaoha-spring-boot-starter-jackson</artifactId>
+        <version>${revision}</version>
+      </dependency>
 
     </dependencies>
   </dependencyManagement>
