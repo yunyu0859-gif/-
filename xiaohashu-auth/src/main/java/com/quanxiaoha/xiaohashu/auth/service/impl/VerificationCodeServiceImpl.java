@@ -7,9 +7,9 @@ import com.quanxiaoha.xiaohashu.auth.constant.RedisKeyConstants;
 import com.quanxiaoha.xiaohashu.auth.enums.ResponseCodeEnum;
 import com.quanxiaoha.xiaohashu.auth.model.vo.verificationcode.SendVerificationCodeReqVO;
 import com.quanxiaoha.xiaohashu.auth.service.VerificationCodeService;
+import com.quanxiaoha.xiaohashu.auth.sms.AliyunSmsHelper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisKeyspaceEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class VerificationCodeServiceImpl implements VerificationCodeService {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private AliyunSmsHelper aliyunSmsHelper;
 
     @Override
     public Response<?> send(SendVerificationCodeReqVO sendVerificationCodeReqVO) {
@@ -35,9 +37,15 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         }
         // 生成 6 位随机数字验证码
         String verificationCode = RandomUtil.randomNumbers(6);
-        // todo: 调用第三方短信发送服务
 
-        log.info("==> 手机号: {}, 已发送验证码：【{}】", phone, verificationCode);
+
+        // 使用号码认证服务提供的签名和登录/注册模板
+        String signName = "恒创联众";
+        String templateCode = "100001";
+        String templateParam = String.format("{\"code\":\"%s\",\"min\":\"3\"}", verificationCode);
+        if (!aliyunSmsHelper.sendMessage(signName, templateCode, phone, templateParam)) {
+            throw new BizException(ResponseCodeEnum.VERIFICATION_CODE_SEND_FAILED);
+        }
         // 存储验证码到 redis, 并设置过期时间为 3 分钟
         redisTemplate.opsForValue().set(key, verificationCode, 3, TimeUnit.MINUTES);
         return Response.success();
